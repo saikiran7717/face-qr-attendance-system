@@ -1,0 +1,29 @@
+# Personal biometric data — never commit these
+faces/
+qr_codes/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# DeepFace model cache (large files, auto-downloaded)
+.deepface/
+
+# Export files
+*.csv
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
