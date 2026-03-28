@@ -101,28 +101,39 @@ def find_best_match(
     candidate: np.ndarray,
     students: list[dict],
     threshold: float,
+    margin: float = 0.10,
 ) -> Optional[dict]:
     """
     Search *students* for the closest face embedding to *candidate*.
-    Prints distances to console to help with threshold tuning.
 
-    Returns
-    -------
-    Best-matching student dict (with added 'distance' key) or None.
+    Rejects if:
+      - best distance > threshold  (not close enough)
+      - gap between best and second-best < margin  (ambiguous)
     """
-    best_match    = None
-    best_distance = float("inf")
+    scores: list[tuple[float, dict]] = []
 
     for student in students:
         _, dist = compare_embedding(student["embedding"], candidate, threshold)
-        print(f"[FaceMatch] Student '{student['name']}' → distance={dist:.4f}  (threshold={threshold})")
-        if dist < best_distance:
-            best_distance = dist
-            best_match    = {**student, "distance": dist}
+        print(f"[FaceMatch] Student '{student['name']}' -> cosine_dist={dist:.4f}  (threshold={threshold})")
+        scores.append((dist, student))
 
-    if best_match and best_distance <= threshold:
-        return best_match
-    return None
+    if not scores:
+        return None
+
+    scores.sort(key=lambda x: x[0])
+    best_dist, best_student = scores[0]
+
+    if best_dist > threshold:
+        print(f"[FaceMatch] No match - best dist {best_dist:.4f} > threshold {threshold}")
+        return None
+
+    if len(scores) > 1:
+        gap = scores[1][0] - best_dist
+        if gap < margin:
+            print(f"[FaceMatch] Ambiguous - gap={gap:.4f} < margin={margin}. Rejected.")
+            return None
+
+    return {**best_student, "distance": best_dist}
 
 
 # ── QR code operations ─────────────────────────────────────────────────────────

@@ -16,16 +16,21 @@ DB_CONFIG = {
     "host":     os.environ.get("DB_HOST",     "localhost"),
     "port":     int(os.environ.get("DB_PORT", "3306")),
     "user":     os.environ.get("DB_USER",     "root"),
-    "password": os.environ.get("DB_PASSWORD", "YOUR_MYSQL_PASSWORD"),  # ← change this
+    "password": os.environ.get("DB_PASSWORD", "Saimudhiraj@7"),
     "database": os.environ.get("DB_NAME",     "attendance_db"),
 }
 
 # ── Face Recognition ──────────────────────────────────────────────────────────
 # L2 Euclidean distance threshold for Facenet512 embeddings.
 # Cosine distance range: 0 (identical) → 2 (opposite).
-# Same person: ~0.10–0.40  |  Different person: ~0.60–1.00
-# Scale-invariant — works with raw (un-normalised) DeepFace vectors.
-FACE_MATCH_THRESHOLD: float = 0.40
+# Same person: ~0.05–0.25  |  Different person: ~0.40–1.00
+# Lower = stricter. Raise only if your own face stops matching.
+FACE_MATCH_THRESHOLD: float = 0.30
+
+# Minimum gap between best and second-best match distance.
+# Prevents matching when two people look similarly close.
+# E.g. best=0.22, second=0.25 → gap=0.03 → REJECTED (too ambiguous)
+FACE_MATCH_MARGIN: float = 0.10
 
 # Number of face samples captured per student during registration
 REGISTRATION_SAMPLES: int = 5

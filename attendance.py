@@ -30,6 +30,7 @@ import numpy as np
 from config import (
     CAMERA_INDEX,
     FACE_MATCH_THRESHOLD,
+    FACE_MATCH_MARGIN,
     FRAME_HEIGHT,
     FRAME_WIDTH,
     QR_SCAN_TIMEOUT,
@@ -108,7 +109,7 @@ def _recognition_worker(
         if embedding is None:
             session._scan_status = "No face detected — look straight at camera"
             return
-        match = find_best_match(embedding, students, threshold)
+        match = find_best_match(embedding, students, threshold, FACE_MATCH_MARGIN)
         if match:
             session._scan_result = match
             session._scan_status = f"Matched: {match['name']}!"
